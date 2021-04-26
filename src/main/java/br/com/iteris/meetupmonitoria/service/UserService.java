@@ -4,11 +4,13 @@ import br.com.iteris.meetupmonitoria.dto.UserDto;
 import br.com.iteris.meetupmonitoria.repository.UserRepository;
 import br.com.iteris.meetupmonitoria.repository.entities.UserEntity;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Log
 @AllArgsConstructor
 @Service
 public class UserService {
@@ -27,7 +29,7 @@ public class UserService {
         String userId = UUID.randomUUID().toString();
 
         userRepository.save(new UserEntity(user.getName(), user.getAge(), user.getEmail(), userId));
-
+        log.info("m=saveUser r=" + userId);
         return userId;
     }
 
@@ -40,7 +42,28 @@ public class UserService {
         final UserDto userDto = new UserDto();
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         userEntity.ifPresent(userDto::createFromEntity);
+        log.info("m=findUser r=" + userDto);
+        return userEntity.isPresent() ? userDto : null;
+    }
 
-        return userDto;
+    /**
+     * update the user with specified id
+     * @param userId  user ID
+     * @param user user data
+     * @return the user ID
+     */
+    public String saveUser(String userId, UserDto user) {
+        userRepository.save(new UserEntity(user.getName(), user.getAge(), user.getEmail(), userId));
+        log.info("m=saveUser r=" + userId);
+        return userId;
+    }
+
+    /**
+     * deletes the user from database
+     * @param userId the user ID
+     */
+    public void deleteUser(String userId) {
+        userRepository.deleteById(userId);
+        log.info("m=findUser r=" + userId);
     }
 }

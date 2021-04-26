@@ -1,10 +1,15 @@
-package br.com.iteris.meetupmonitoria.config;
+/*
+package br.com.iteris.meetupmonitoria.config.newrelic;
 
 import com.newrelic.telemetry.Attributes;
 import io.micrometer.NewRelicRegistryConfig;
-import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.newrelic.NewRelicRegistry;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.CompositeMeterRegistryAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration;
@@ -14,18 +19,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.Duration;
-
 @Configuration
 @AutoConfigureBefore({
-    CompositeMeterRegistryAutoConfiguration.class,
-    SimpleMetricsExportAutoConfiguration.class
+        CompositeMeterRegistryAutoConfiguration.class,
+        SimpleMetricsExportAutoConfiguration.class
 })
 @AutoConfigureAfter(MetricsAutoConfiguration.class)
 @ConditionalOnClass(NewRelicRegistry.class)
-public class NewRelicMetricsExportAutoConfiguration {
+public class MicrometerConfig {
+
     @Bean
     public NewRelicRegistryConfig newRelicConfig() {
         return new NewRelicRegistryConfig() {
@@ -36,7 +38,12 @@ public class NewRelicMetricsExportAutoConfiguration {
 
             @Override
             public String apiKey() {
-                return System.getenv("INSIGHTS_INSERT_KEY");
+                return System.getenv("NR_INSERT_API_KEY");
+            }
+
+            @Override
+            public String uri() {
+                return System.getenv("NR_METRIC_URI");
             }
 
             @Override
@@ -44,11 +51,13 @@ public class NewRelicMetricsExportAutoConfiguration {
                 return Duration.ofSeconds(5);
             }
 
+            @Value("${spring.application.name}")
+            String serviceName;
+
             @Override
             public String serviceName() {
-                return "My Service Name";
+                return serviceName;
             }
-
         };
     }
 
@@ -59,11 +68,9 @@ public class NewRelicMetricsExportAutoConfiguration {
                 NewRelicRegistry.builder(config)
                         .commonAttributes(
                                 new Attributes()
-                                        .put("host", InetAddress.getLocalHost().getHostName()))
+                                        .put("host.hostname", InetAddress.getLocalHost().getHostName()))
                         .build();
-        newRelicRegistry.config().meterFilter(MeterFilter.ignoreTags("plz_ignore_me"));
-        newRelicRegistry.config().meterFilter(MeterFilter.denyNameStartsWith("jvm.threads"));
         newRelicRegistry.start(new NamedThreadFactory("newrelic.micrometer.registry"));
         return newRelicRegistry;
     }
-}
+}*/

@@ -12,12 +12,10 @@ public class UserDto {
     private String name;
     private Integer age;
     private String email;
-    private String id;
 
     public void createFromEntity(UserEntity userEntity) {
         this.setAge(userEntity.getAge());
         this.setEmail(userEntity.getEmail());
         this.setName(userEntity.getName());
-        this.setId(userEntity.getId());
     }
 }
