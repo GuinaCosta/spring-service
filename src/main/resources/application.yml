@@ -4,3 +4,8 @@ springdoc:
 redis:
   host: localhost
   port: 6379
+
+integration:
+  client:
+    sales:
+      url: http://localhost:8030

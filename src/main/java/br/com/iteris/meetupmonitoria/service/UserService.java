@@ -1,6 +1,8 @@
 package br.com.iteris.meetupmonitoria.service;
 
+import br.com.iteris.meetupmonitoria.client.SalesClient;
 import br.com.iteris.meetupmonitoria.dto.UserDto;
+import br.com.iteris.meetupmonitoria.dto.UserSalesDto;
 import br.com.iteris.meetupmonitoria.repository.UserRepository;
 import br.com.iteris.meetupmonitoria.repository.entities.UserEntity;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,11 @@ public class UserService {
      * user repository
      */
     private final UserRepository userRepository;
+
+    /**
+     * sales client
+     */
+    private final SalesClient salesClient;
 
     /**
      * save the user
@@ -43,6 +50,23 @@ public class UserService {
         Optional<UserEntity> userEntity = userRepository.findById(userId);
         userEntity.ifPresent(userDto::createFromEntity);
         log.info("m=findUser r=" + userDto);
+        return userEntity.isPresent() ? userDto : null;
+    }
+
+    /**
+     * Find user on the database
+     * @param userId the user id to find
+     * @return user found on database
+     */
+    public UserSalesDto findUserPrice(String userId) {
+        final UserSalesDto userDto = new UserSalesDto();
+        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        userEntity.ifPresent(userDto::createFromEntity);
+
+        userDto.setPrice(salesClient.getCurrencyPrice("real"));
+
+        log.info("m=findUser r=" + userDto);
+
         return userEntity.isPresent() ? userDto : null;
     }
 

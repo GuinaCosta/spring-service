@@ -1,6 +1,7 @@
 package br.com.iteris.meetupmonitoria.resource;
 
 import br.com.iteris.meetupmonitoria.dto.UserDto;
+import br.com.iteris.meetupmonitoria.dto.UserSalesDto;
 import br.com.iteris.meetupmonitoria.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -21,6 +22,13 @@ public class UserResource {
     public ResponseEntity<UserDto> searchUser(@PathVariable(name = "id") String id) {
         log.info("m=searchUser id=" + id);
         UserDto user = userService.findUser(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("price/{id}")
+    public ResponseEntity<UserSalesDto> searchUserPriceCurrency(@PathVariable(name = "id") String id) {
+        log.info("m=searchUserPriceCurrency id=" + id);
+        UserSalesDto user = userService.findUserPrice(id);
         return ResponseEntity.ok(user);
     }
 
